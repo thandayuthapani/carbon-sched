@@ -1,0 +1,15 @@
+controllerManager:
+  securityContext:
+    runAsUser: 1000
+
+scheduler:
+  securityContext:
+    runAsUser: 1000
+
+postDeleteJob:
+  securityContext:
+    runAsUser: 1000
+
+restarter:
+  securityContext:
+    runAsUser: 1000
