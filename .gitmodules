@@ -1,0 +1,3 @@
+[submodule "metrics-collector"]
+	path = metrics-collector
+	url = git@github.com:thandayuthapani/metrics-collector.git
