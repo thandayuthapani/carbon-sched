@@ -1,2 +1,4 @@
 .vscode
 *.Identifier
+.idea
+pkg/
