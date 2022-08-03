@@ -17,3 +17,14 @@
 - Absolute Metrics? Carbon-efficient region vs deployment location
 
 ### Notes
+- Deploying Admiralty on cluster
+- Read literature on metrics - [1](https://dl.acm.org/doi/10.1145/3530688), etc
+
+## August 4th, 2022
+### Agenda
+
+- Update on metrics collector
+- Update on deploying Admiralty on cluster
+- Power Usage Effectiveness (PUE) - A plausible choice?
+
+### Notes
