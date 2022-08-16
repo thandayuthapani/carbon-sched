@@ -2,3 +2,4 @@
 *.Identifier
 .idea
 pkg/
+admiralty-0.15.0/vendor/

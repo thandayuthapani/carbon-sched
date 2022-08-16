@@ -52,6 +52,7 @@ var _ framework.PostFilterPlugin = &Plugin{}
 var _ framework.ReservePlugin = &Plugin{}
 var _ framework.PreBindPlugin = &Plugin{}
 var _ framework.PostBindPlugin = &Plugin{}
+var _ framework.ScorePlugin = &Plugin{}
 
 // Name is the name of the plugin used in the plugin registry and configurations.
 const Name = "proxy"
@@ -63,6 +64,32 @@ func (pl *Plugin) Name() string {
 
 func virtualNodeNameToClusterName(nodeName string) string {
 	return nodeName
+}
+
+func (pl *Plugin) Score(ctx context.Context, state *framework.CycleState, p *v1.Pod, nodeName string) (int64, *framework.Status) {
+	nodeInfo, err := pl.handle.SnapshotSharedLister().NodeInfos().Get(nodeName)
+	if err != nil {
+		return 0, framework.AsStatus(fmt.Errorf("getting node %q from Snapshot: %w", nodeName, err))
+	}
+
+	nodeInfos, err := pl.handle.SnapshotSharedLister().NodeInfos().List()
+	if err != nil {
+		return 0, framework.AsStatus(err)
+	}
+	totalNumNodes := len(nodeInfos)
+
+	score := calculateScores(nodeInfo, totalNumNodes)
+	// TODO: Implement carbon-aware scoring
+	return score, nil
+}
+
+func (pl *Plugin) ScoreExtensions() framework.ScoreExtensions {
+	// TODO: Implement carbon-aware scoring
+	return nil
+}
+
+func calculateScores(nodeInfo *framework.NodeInfo, num:w:Nodes int) int64 {
+	return 0
 }
 
 func (pl *Plugin) getCandidate(ctx context.Context, proxyPod *v1.Pod, clusterName string) (*v1alpha1.PodChaperon, error) {
