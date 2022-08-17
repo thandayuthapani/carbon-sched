@@ -28,3 +28,13 @@
 - Power Usage Effectiveness (PUE) - A plausible choice?
 
 ### Notes
+- Storing carbon metrics - Is it necessary? Can we use historical API to collect the history data?
+- Debug admiralty deployment in cluster
+
+## August 18th, 2022
+### Agenda
+- Update on metrics collector - Cluster ready
+- Update on admiralty deployment - Tested in cluster with mock deployment of pods
+- Discussion on [Cucumber](https://link.springer.com/chapter/10.1007/978-3-031-12597-3_14) literature
+
+### Notes
