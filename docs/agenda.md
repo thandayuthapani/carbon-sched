@@ -38,3 +38,12 @@
 - Discussion on [Cucumber](https://link.springer.com/chapter/10.1007/978-3-031-12597-3_14) literature
 
 ### Notes
+- Add normalization code in metrics-collector
+- Add scheduling plugin code to do carbon-aware scheduling
+- Integrate Knative into the setup
+
+## September 5th, 2022
+### Agenda
+- Update on metrics-collector and scheduling plugin
+
+### Notes

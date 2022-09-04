@@ -18,7 +18,9 @@ package proxy
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"net/http"
 	"sync"
 	"time"
 
@@ -54,6 +56,9 @@ var _ framework.PreBindPlugin = &Plugin{}
 var _ framework.PostBindPlugin = &Plugin{}
 var _ framework.ScorePlugin = &Plugin{}
 
+var EmissionRank = map[string]int64{}
+var refreshTimer *time.Timer
+
 // Name is the name of the plugin used in the plugin registry and configurations.
 const Name = "proxy"
 
@@ -72,13 +77,13 @@ func (pl *Plugin) Score(ctx context.Context, state *framework.CycleState, p *v1.
 		return 0, framework.AsStatus(fmt.Errorf("getting node %q from Snapshot: %w", nodeName, err))
 	}
 
-	nodeInfos, err := pl.handle.SnapshotSharedLister().NodeInfos().List()
-	if err != nil {
-		return 0, framework.AsStatus(err)
-	}
-	totalNumNodes := len(nodeInfos)
+	//nodeInfos, err := pl.handle.SnapshotSharedLister().NodeInfos().List()
+	//if err != nil {
+	//	return 0, framework.AsStatus(err)
+	//}
+	//totalNumNodes := len(nodeInfos)
 
-	score := calculateScores(nodeInfo, totalNumNodes)
+	score := calculateScores(nodeInfo, refreshTimer)
 	// TODO: Implement carbon-aware scoring
 	return score, nil
 }
@@ -88,8 +93,66 @@ func (pl *Plugin) ScoreExtensions() framework.ScoreExtensions {
 	return nil
 }
 
-func calculateScores(nodeInfo *framework.NodeInfo, num:w:Nodes int) int64 {
-	return 0
+func calculateScores(nodeInfo *framework.NodeInfo, refreshTimer *time.Timer) int64 {
+	if refreshTimer == nil {
+		refreshTimer = time.NewTimer(5 * time.Minute)
+	}
+	emissionRank, err := getEmissionRanking(refreshTimer)
+	if err != nil {
+		fmt.Println(err)
+		return 0
+	}
+	region := nodeInfo.Node().Labels["node.kubernetes.io/region"]
+	score := emissionRank[region]
+	if score == 0 {
+		return 0
+	}
+	return 90 + score
+}
+
+func getEmissionRanking(refreshTimer *time.Timer) (map[string]int64, error) {
+	if len(EmissionRank) == 0 {
+		err := queryDataFromServer()
+		if err != nil {
+			return map[string]int64{}, err
+		}
+		return EmissionRank, nil
+	}
+	select {
+	case <-refreshTimer.C:
+		err := queryDataFromServer()
+		if err != nil {
+			return map[string]int64{}, err
+		}
+		return EmissionRank, nil
+	default:
+		return EmissionRank, nil
+	}
+}
+
+func queryDataFromServer() error {
+	url := "http://metrics-collector.default.svc.cluster.local:8080/getemission"
+	method := "GET"
+	client := &http.Client{}
+
+	req, err := http.NewRequest(method, url, nil)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	res, err := client.Do(req)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	decoder := json.NewDecoder(res.Body)
+	err = decoder.Decode(&EmissionRank)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	return nil
 }
 
 func (pl *Plugin) getCandidate(ctx context.Context, proxyPod *v1.Pod, clusterName string) (*v1alpha1.PodChaperon, error) {
