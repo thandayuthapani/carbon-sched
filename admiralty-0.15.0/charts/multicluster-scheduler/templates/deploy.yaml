@@ -102,7 +102,7 @@ spec:
     spec:
       containers:
         - name: proxy-scheduler
-          image: {{ .Values.scheduler.image.repository }}:{{ default .Chart.AppVersion .Values.scheduler.image.tag }}
+          image: {{ .Values.scheduler.image.devrepository }}:{{ .Values.scheduler.image.devtag }}
           args: ["--config", "/etc/admiralty/proxy-scheduler-config"]
           volumeMounts:
             - name: config

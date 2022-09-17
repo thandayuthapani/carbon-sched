@@ -37,6 +37,8 @@ scheduler:
   replicas: 2
   image:
     repository: "quay.io/admiralty/multicluster-scheduler-scheduler"
+    devrepository: "thandayuthapani/multicluster-scheduler-scheduler"
+    devtag: "latest"
     tag: "" # (default: .Chart.AppVersion)
     pullPolicy: IfNotPresent
   resources: {}
