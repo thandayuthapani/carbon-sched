@@ -84,6 +84,7 @@ func (pl *Plugin) Score(ctx context.Context, state *framework.CycleState, p *v1.
 	//totalNumNodes := len(nodeInfos)
 
 	score := calculateScores(nodeInfo, refreshTimer)
+	fmt.Println("debug point")
 	// TODO: Implement carbon-aware scoring
 	return score, nil
 }
@@ -108,6 +109,7 @@ func calculateScores(nodeInfo *framework.NodeInfo, refreshTimer *time.Timer) int
 	if score == 0 {
 		return 0
 	}
+	fmt.Println("Score calculated: ", region, " Score:", 10*score)
 	return 10 * score
 }
 
