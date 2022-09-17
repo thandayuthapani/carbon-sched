@@ -102,7 +102,8 @@ func calculateScores(nodeInfo *framework.NodeInfo, refreshTimer *time.Timer) int
 		fmt.Println(err)
 		return 0
 	}
-	region := nodeInfo.Node().Labels["node.kubernetes.io/region"]
+	//region := nodeInfo.Node().Labels["node.kubernetes.io/region"]
+	region := nodeInfo.Node().Annotations["node.kubernetes.io/region"]
 	score := emissionRank[region]
 	if score == 0 {
 		return 0
