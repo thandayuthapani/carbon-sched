@@ -108,7 +108,7 @@ func calculateScores(nodeInfo *framework.NodeInfo, refreshTimer *time.Timer) int
 	if score == 0 {
 		return 0
 	}
-	return 90 + score
+	return 10 * score
 }
 
 func getEmissionRanking(refreshTimer *time.Timer) (map[string]int64, error) {
