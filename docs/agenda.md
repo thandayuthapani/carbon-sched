@@ -47,3 +47,13 @@
 - Update on metrics-collector and scheduling plugin
 
 ### Notes
+- Scheduling Plugin
+- latency in admiralty
+
+## September 19th, 2022
+### Agenda
+- East-West communication issue in admiralty - [admiralty](https://admiralty.io/pricing/), [Cilium](https://cilium.io/blog/2019/03/12/clustermesh/)
+- Alternative for admiralty - [multi-cluster mesh](https://www.cncf.io/blog/2021/04/12/simplifying-multi-clusters-in-kubernetes/), [liqo](https://github.com/liqotech/liqo)
+- Update on scheduler testing in cluster
+
+### Notes
