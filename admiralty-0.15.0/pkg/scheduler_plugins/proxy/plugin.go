@@ -30,7 +30,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	"k8s.io/apimachinery/pkg/util/wait"
-	"k8s.io/klog"
+	"k8s.io/klog/v2"
 	"k8s.io/kubernetes/pkg/scheduler/framework"
 
 	"admiralty.io/multicluster-scheduler/pkg/apis/multicluster/v1alpha1"
@@ -109,8 +109,10 @@ func calculateScores(nodeInfo *framework.NodeInfo, refreshTimer *time.Timer) int
 	if score == 0 {
 		return 0
 	}
-	klog.Infof("Score calculated: ", region, " Score:", 100*score)
-	return 100 * score
+	klog.InfoS("Populated map: ", emissionRank)
+	klog.InfoS("Populated map1: ", EmissionRank)
+	klog.Infof("Score calculated: ", region, " Score:", 10*score)
+	return 10 * score
 }
 
 func getEmissionRanking(refreshTimer *time.Timer) (map[string]int64, error) {
