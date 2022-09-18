@@ -84,7 +84,7 @@ func (pl *Plugin) Score(ctx context.Context, state *framework.CycleState, p *v1.
 	//totalNumNodes := len(nodeInfos)
 
 	score := calculateScores(nodeInfo, refreshTimer)
-	klog.V(1).Infof("debug point")
+	klog.Infof("debug point")
 	// TODO: Implement carbon-aware scoring
 	return score, nil
 }
@@ -100,7 +100,7 @@ func calculateScores(nodeInfo *framework.NodeInfo, refreshTimer *time.Timer) int
 	}
 	emissionRank, err := getEmissionRanking(refreshTimer)
 	if err != nil {
-		klog.V(1).Info(err)
+		klog.Info(err)
 		return 0
 	}
 	//region := nodeInfo.Node().Labels["node.kubernetes.io/region"]
@@ -109,7 +109,7 @@ func calculateScores(nodeInfo *framework.NodeInfo, refreshTimer *time.Timer) int
 	if score == 0 {
 		return 0
 	}
-	klog.V(1).Infof("Score calculated: ", region, " Score:", 100*score)
+	klog.Infof("Score calculated: ", region, " Score:", 100*score)
 	return 100 * score
 }
 
@@ -140,19 +140,19 @@ func queryDataFromServer() error {
 
 	req, err := http.NewRequest(method, url, nil)
 	if err != nil {
-		klog.V(1).Info(err)
+		klog.Info(err)
 		return err
 	}
 
 	res, err := client.Do(req)
 	if err != nil {
-		klog.V(1).Info(err)
+		klog.Info(err)
 		return err
 	}
 	decoder := json.NewDecoder(res.Body)
 	err = decoder.Decode(&EmissionRank)
 	if err != nil {
-		klog.V(1).Info(err)
+		klog.Info(err)
 		return err
 	}
 	return nil
