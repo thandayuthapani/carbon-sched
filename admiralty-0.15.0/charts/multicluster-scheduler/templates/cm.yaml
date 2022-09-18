@@ -17,7 +17,7 @@ data:
         plugins:
           score:
             disabled:
-              - name: *
+              - name: '*'
           multiPoint:
             enabled:
               - name: proxy
