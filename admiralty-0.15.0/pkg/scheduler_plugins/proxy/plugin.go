@@ -105,14 +105,15 @@ func calculateScores(nodeInfo *framework.NodeInfo, refreshTimer *time.Timer) int
 	}
 	//region := nodeInfo.Node().Labels["node.kubernetes.io/region"]
 	region := nodeInfo.Node().Annotations["node.kubernetes.io/region"]
-	score := emissionRank[region]
+	//score := emissionRank[region]
+	score := 7
 	if score == 0 {
 		return 0
 	}
 	klog.InfoS("Populated map: ", emissionRank)
 	klog.InfoS("Populated map1: ", EmissionRank)
 	klog.Infof("Score calculated: ", region, " Score:", 10*score)
-	return 10 * score
+	return int64(10 * score)
 }
 
 func getEmissionRanking(refreshTimer *time.Timer) (map[string]int64, error) {
