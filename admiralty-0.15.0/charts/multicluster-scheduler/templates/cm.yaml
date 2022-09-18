@@ -15,6 +15,9 @@ data:
     profiles:
       - schedulerName: admiralty-proxy
         plugins:
+          score:
+            disabled:
+              - name: *
           multiPoint:
             enabled:
               - name: proxy
@@ -28,7 +31,7 @@ data:
       resourceLock: leases
     profiles:
       - schedulerName: admiralty-candidate
-        plugins:
+        plugins: 
           multiPoint:
             enabled:
               - name: candidate
