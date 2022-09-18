@@ -110,7 +110,7 @@ func calculateScores(nodeInfo *framework.NodeInfo, refreshTimer *time.Timer) int
 		return 0
 	}
 	fmt.Println("Score calculated: ", region, " Score:", 10*score)
-	return 10 * score
+	return 100 * score
 }
 
 func getEmissionRanking(refreshTimer *time.Timer) (map[string]int64, error) {
