@@ -17,7 +17,14 @@ data:
         plugins:
           score:
             disabled:
-              - name: '*'
+              - name: ImageLocality
+              - name: TaintToleration
+              - name: NodeAffinity
+              - name: PodTopologySpread
+              - name: NodeResourcesFit
+              - name: NodeResourcesBalancedAllocation
+              - name: VolumeBinding
+              - name: InterPodAffinity
           multiPoint:
             enabled:
               - name: proxy
