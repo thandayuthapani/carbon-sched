@@ -57,3 +57,10 @@
 - Update on scheduler testing in cluster
 
 ### Notes
+- Evaluate Liqo for multi-cluster scheduling
+
+## September 27th
+### Agenda
+- Update on evaluation of liqo to our usecase
+
+### Notes
