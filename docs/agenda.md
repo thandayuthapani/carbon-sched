@@ -64,3 +64,12 @@
 - Update on evaluation of liqo to our usecase
 
 ### Notes
+- Hack22 hackathon
+
+## October 10th
+### Agenda
+- Update on scheduler code
+- Update on Carbon SDK - how to use carbon sdk in our hackathon usecase
+- Discussion on hackathon
+
+### Notes
