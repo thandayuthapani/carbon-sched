@@ -4,8 +4,7 @@ metadata:
   name: my-scheduler-as-kube-scheduler
 subjects:
   - kind: ServiceAccount
-    name: my-scheduler
-    namespace: kube-system
+    name: kube-carbon-scheduler
 roleRef:
   kind: ClusterRole
   name: system:kube-scheduler

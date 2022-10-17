@@ -16,35 +16,21 @@ spec:
     metadata:
       labels:
         component: scheduler
-        tier: control-plane
-        version: second
     spec:
       serviceAccountName: kube-carbon-scheduler
       containers:
         - command:
-            - /usr/local/bin/kube-scheduler
-            - --address=0.0.0.0
-            - --leader-elect=false
             - --scheduler-name=kube-carbon-scheduler
-            - --use-legacy-policy-config=false
-            - --config=/etc/admiralty/proxy-scheduler-config
-          image: gcr.io/<project-id>/my-kube-scheduler:1.0
-          livenessProbe:
-            httpGet:
-              path: /healthz
-              port: 10251
-            initialDelaySeconds: 15
+            - --config=/etc/carbon-scheduler-config
+            - --v=4
+          image: thandayuthapani/kube-carbon-scheduler
           name: kube-carbon-scheduler
-          readinessProbe:
-            httpGet:
-              path: /healthz
-              port: 10251
-          resources:
-            requests:
-              cpu: '0.1'
-          securityContext:
-            privileged: false
-          volumeMounts: []
+          volumeMounts:
+            - name: config
+              mountPath: /etc/admiralty
       hostNetwork: false
       hostPID: false
-      volumes: []
+      volumes:
+        - name: config
+          configMap:
+            - name: carbon-scheduler-configmap
