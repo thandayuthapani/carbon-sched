@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: iis
+spec:
+  containers:
+  - image: microsoft/iis:nanoserver
+    imagePullPolicy: Always
+    name: iis
+    resources:
+      requests:
+        memory: 3.5G
+        cpu: 2
+      limits:
+        memory: 3.5G
+        cpu: 2
+    ports:
+    - containerPort: 80
+      name: http
+      protocol: TCP
+    - containerPort: 443
+      name: https
+  dnsPolicy: Default
+  nodeSelector:
+    kubernetes.io/role: agent
+    beta.kubernetes.io/os: windows
+    type: virtual-kubelet
+  automountServiceAccountToken: false
+  tolerations:
+  - key: virtual-kubelet.io/provider
+    operator: Exists
+  - key: azure.com/aci
+    effect: NoSchedule

@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cleanup
+spec:
+  selector:
+    matchLabels:
+      app: cleanup
+  template:
+    metadata:
+      labels:
+        app: cleanup
+      annotations:
+        multicluster.admiralty.io/elect: ""
+    spec:
+      containers:
+        - name: pause
+          image: gcr.io/google_containers/pause

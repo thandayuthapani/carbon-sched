@@ -1,0 +1,278 @@
+{{- if not .Values.debug.controllerManager }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "fullname" . }}-controller-manager
+  labels: {{ include "labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels: {{ include "selectorLabels" . | nindent 6 }}
+      component: controller-manager
+  replicas: {{ .Values.controllerManager.replicas }}
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels: {{ include "labels" . | nindent 8 }}
+        component: controller-manager
+    spec:
+      containers:
+        - name: controller-manager
+          args: ["--leader-elect"]
+          env:
+            # POD_NAME for leader election
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: SOURCE_CLUSTER_ROLE_NAME
+              value: {{ include "fullname" . }}-source
+            - name: CLUSTER_SUMMARY_VIEWER_CLUSTER_ROLE_NAME
+              value: {{ include "fullname" . }}-cluster-summary-viewer
+            - name: VKUBELET_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          image: {{ .Values.controllerManager.image.repository }}:{{ default .Chart.AppVersion .Values.controllerManager.image.tag }}
+          ports:
+              - containerPort: 9443
+              - containerPort: 10250
+          volumeMounts:
+            - mountPath: /tmp/k8s-webhook-server/serving-certs
+              name: cert
+              readOnly: true
+          imagePullPolicy: {{ .Values.controllerManager.image.pullPolicy }}
+            {{- with .Values.controllerManager.resources }}
+          resources: {{ toYaml . | nindent 12 }}
+            {{- end }}
+      priorityClassName: system-cluster-critical
+      serviceAccountName: {{ include "fullname" . }}
+      volumes:
+        - name: cert
+          secret:
+            defaultMode: 420
+            secretName: {{ include "fullname" . }}-cert
+        {{- with .Values.imagePullSecretName }}
+      imagePullSecrets:
+        - name: {{ . }}
+          {{- end }}
+          {{- with .Values.controllerManager.nodeSelector }}
+      nodeSelector: {{ toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.controllerManager.securityContext }}
+      securityContext: {{ toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.controllerManager.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.controllerManager.tolerations }}
+      tolerations: {{ toYaml . | nindent 8 }}
+        {{- end }}
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "fullname" . }}-controller-manager
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels: {{ include "selectorLabels" . | nindent 6 }}
+      component: controller-manager
+---
+{{- end }}
+  {{- if not .Values.debug.proxyScheduler }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "fullname" . }}-proxy-scheduler
+  labels: {{ include "labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels: {{ include "selectorLabels" . | nindent 6 }}
+      component: proxy-scheduler
+  replicas: {{ .Values.scheduler.replicas }}
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/cm.yaml") . | sha256sum }}
+      labels: {{ include "labels" . | nindent 8 }}
+        component: proxy-scheduler
+    spec:
+      containers:
+        - name: proxy-scheduler
+          image: {{ .Values.scheduler.image.repository }}:{{ default .Chart.AppVersion .Values.scheduler.image.tag }}
+          args: ["--config", "/etc/admiralty/proxy-scheduler-config"]
+          volumeMounts:
+            - name: config
+              mountPath: /etc/admiralty
+          imagePullPolicy: {{ .Values.scheduler.image.pullPolicy }}
+            {{- with .Values.scheduler.resources }}
+          resources: {{ toYaml . | nindent 12 }}
+            {{- end }}
+      priorityClassName: system-cluster-critical
+      serviceAccountName: {{ include "fullname" . }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "fullname" . }}
+            {{- with .Values.imagePullSecretName }}
+      imagePullSecrets:
+        - name: {{ . }}
+          {{- end }}
+          {{- with .Values.scheduler.nodeSelector }}
+      nodeSelector: {{ toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.scheduler.securityContext }}
+      securityContext: {{ toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.scheduler.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.scheduler.tolerations }}
+      tolerations: {{ toYaml . | nindent 8 }}
+        {{- end }}
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "fullname" . }}-proxy-scheduler
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels: {{ include "selectorLabels" . | nindent 6 }}
+      component: proxy-scheduler
+---
+{{- end }}
+  {{- if not .Values.debug.candidateScheduler }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "fullname" . }}-candidate-scheduler
+  labels: {{ include "labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels: {{ include "selectorLabels" . | nindent 6 }}
+      component: candidate-scheduler
+  replicas: {{ .Values.scheduler.replicas }}
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/cm.yaml") . | sha256sum }}
+      labels: {{ include "labels" . | nindent 8 }}
+        component: candidate-scheduler
+    spec:
+      containers:
+        - name: candidate-scheduler
+          image: {{ .Values.scheduler.image.repository }}:{{ default .Chart.AppVersion .Values.scheduler.image.tag }}
+          args: ["--config", "/etc/admiralty/candidate-scheduler-config"]
+          volumeMounts:
+            - name: config
+              mountPath: /etc/admiralty
+          imagePullPolicy: {{ .Values.scheduler.image.pullPolicy }}
+            {{- with .Values.scheduler.resources }}
+          resources: {{ toYaml . | nindent 12 }}
+            {{- end }}
+      priorityClassName: system-cluster-critical
+      serviceAccountName: {{ include "fullname" . }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "fullname" . }}
+            {{- with .Values.imagePullSecretName }}
+      imagePullSecrets:
+        - name: {{ . }}
+          {{- end }}
+          {{- with .Values.scheduler.nodeSelector }}
+      nodeSelector: {{ toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.scheduler.securityContext }}
+      securityContext: {{ toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.scheduler.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.scheduler.tolerations }}
+      tolerations: {{ toYaml . | nindent 8 }}
+        {{- end }}
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "fullname" . }}-candidate-scheduler
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels: {{ include "selectorLabels" . | nindent 6 }}
+      component: candidate-scheduler
+---
+{{- end }}
+  {{- if not .Values.debug.restarter }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "fullname" . }}-restarter
+  labels: {{ include "labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels: {{ include "selectorLabels" . | nindent 6 }}
+      component: restarter
+  replicas: {{ .Values.scheduler.replicas }}
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels: {{ include "labels" . | nindent 8 }}
+        component: restarter
+    spec:
+      containers:
+        - name: restarter
+          args: ["--leader-elect"]
+          env:
+            # POD_NAME for leader election
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: ADMIRALTY_CONTROLLER_MANAGER_DEPLOYMENT_NAME
+              value: {{ include "fullname" . }}-controller-manager
+            - name: ADMIRALTY_PROXY_SCHEDULER_DEPLOYMENT_NAME
+              value: {{ include "fullname" . }}-proxy-scheduler
+          image: {{ .Values.restarter.image.repository }}:{{ default .Chart.AppVersion .Values.restarter.image.tag }}
+          imagePullPolicy: {{ .Values.restarter.image.pullPolicy }}
+            {{- with .Values.restarter.resources }}
+          resources: {{ toYaml . | nindent 12 }}
+            {{- end }}
+      priorityClassName: system-cluster-critical
+      serviceAccountName: {{ include "fullname" . }}
+        {{- with .Values.imagePullSecretName }}
+      imagePullSecrets:
+        - name: {{ . }}
+          {{- end }}
+          {{- with .Values.restarter.nodeSelector }}
+      nodeSelector: {{ toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.restarter.securityContext }}
+      securityContext: {{ toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.restarter.affinity }}
+      affinity: {{ toYaml . | nindent 8 }}
+        {{- end }}
+        {{- with .Values.restarter.tolerations }}
+      tolerations: {{ toYaml . | nindent 8 }}
+        {{- end }}
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "fullname" . }}-restarter
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels: {{ include "selectorLabels" . | nindent 6 }}
+      component: restarter
+---
+{{- end }}

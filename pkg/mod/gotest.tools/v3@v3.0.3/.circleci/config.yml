@@ -1,0 +1,58 @@
+version: 2.1
+
+orbs:
+  go: gotest/tools@0.0.13
+
+workflows:
+  ci:
+    jobs:
+      - lint
+      - go/test:
+          name: test-golang-1.12
+          executor:
+            name: go/golang
+            tag:  1.12-alpine
+      - go/test:
+          name: test-golang-1.13
+          executor:
+            name: go/golang
+            tag:  1.13-alpine
+      - go/test:
+          name: test-golang-1.14
+          executor:
+            name: go/golang
+            tag:  1.14-alpine
+      - go/test:
+          name: test-golang-1.15
+          executor:
+            name: go/golang
+            tag:  1.15-alpine
+          codecov-upload: true
+      - go/test:
+          name: test-windows-go1.12
+          executor: windows
+          pre-steps:
+            - run: |
+                git config --global core.autocrlf false
+                git config --global core.symlinks true
+
+executors:
+  windows:
+    machine:
+      image: windows-server-2019-vs2019:201908-06
+      resource_class: windows.medium
+      shell: bash.exe
+
+jobs:
+
+  lint:
+    executor: go/golang
+    steps:
+    - checkout
+    - go/install-golangci-lint:
+        prefix: v2
+        version: 1.21.0
+    - run:
+        name: Lint
+        command: |
+          golangci-lint run -v --concurrency 2

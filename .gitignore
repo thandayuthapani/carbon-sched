@@ -1,5 +1,6 @@
 .vscode
 *.Identifier
 .idea
-pkg/
+carbon-scheduler/vendor/
 admiralty-0.15.0/vendor/
+_out/

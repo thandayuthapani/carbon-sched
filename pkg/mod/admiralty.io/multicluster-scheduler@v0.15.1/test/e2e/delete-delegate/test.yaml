@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: delete-delegate
+spec:
+  selector:
+    matchLabels:
+      app: delete-delegate
+  template:
+    metadata:
+      labels:
+        app: delete-delegate
+      annotations:
+        multicluster.admiralty.io/elect: ""
+    spec:
+      containers:
+        - name: pause
+          image: gcr.io/google_containers/pause

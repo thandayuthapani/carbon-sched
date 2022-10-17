@@ -1,0 +1,28 @@
+- name: Admiralty Multi-Cluster Scheduler
+  tag: multicluster-scheduler
+  org: admiraltyio
+  vanityImportPath: admiralty.io/multicluster-scheduler
+- name: Alibaba Cloud Elastic Container Instance (**ECI**)
+  tag: alibabacloud-eci
+- name: AWS Fargate
+  tag: aws-fargate
+- name: Azure Batch
+  tag: azure-batch
+- name: Azure Container Instances (**ACI**)
+  tag: azure-aci
+- name: Elotl Kip
+  tag: kip
+  org: elotl
+- name: Kubernetes Container Runtime Interface (**CRI**)
+  tag: cri
+- name: Huawei Cloud Container Instance (**CCI**)
+  tag: huawei-cci
+- name: HashiCorp Nomad
+  tag: nomad
+- name: Liqo
+  tag: liqo
+  org: liqotech
+- name: OpenStack Zun
+  tag: openstack-zun
+- name: Tencent Games Tensile Kube
+  tag: tensile-kube

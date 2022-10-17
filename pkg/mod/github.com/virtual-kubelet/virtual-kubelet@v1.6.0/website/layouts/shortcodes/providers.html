@@ -1,0 +1,27 @@
+{{- $providers := site.Data.providers }}
+<table>
+  <tbody>
+    {{ range $providers }}
+    {{ $name     := .name | markdownify }}
+    {{ $githubPath := printf "github.com/%s/%s" (.org | default "virtual-kubelet") .tag }}
+    {{ $pkgName  := .vanityImportPath | default $githubPath }}
+    {{ $pkgUrl   := printf "https://%s/blob/master/README.md#readme" $githubPath }}
+    {{ $godocUrl := printf "https://godoc.org/%s" $pkgName }}
+    <tr>
+      <td>
+        {{ $name }}
+      </td>
+      <td>
+        <a href="{{ $pkgUrl }}" target="_blank">
+          Docs
+        </a>
+      </td>
+      <td>
+        <a href="{{ $godocUrl }}" target="_blank">
+          GoDoc
+        </a>
+      </td>
+    </tr>
+    {{ end }}
+  </tbody>
+</table>

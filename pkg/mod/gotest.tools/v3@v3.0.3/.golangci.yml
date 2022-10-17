@@ -1,0 +1,61 @@
+linters-settings:
+  gocyclo:
+    min-complexity: 10
+  goconst:
+    min-len: 5
+    min-occurrences: 10
+  lll:
+    line-length: 100
+
+issues:
+  exclude-use-default: false
+  exclude-rules:
+    - text: 'result .* is always'
+      linters: [unparam]
+    - text: 'always receives'
+      linters: [unparam]
+    - path: _test\.go
+      linters: [errcheck, staticcheck]
+    - path: internal/difflib/difflib\.go
+      text: .
+    - text: 'return value of .*Close` is not checked'
+      linters: [errcheck]
+    - text: 'SA1019'
+      linters: [staticcheck]
+    - path: internal/
+      text: 'ST1000'
+      linters: [stylecheck]
+    - path: 'example_test\.go'
+      linters: [bodyclose]
+
+linters:
+  disable-all: true
+  enable:
+    - bodyclose
+    - deadcode
+    - depguard
+    - dogsled
+    - errcheck
+    - gocognit
+    - goconst
+    - gocyclo
+    - gofmt
+    - goimports
+    - golint
+    - gosimple
+    - govet
+    - ineffassign
+    - interfacer
+    - lll
+    - misspell
+    - nakedret
+    - prealloc
+    - staticcheck
+    - structcheck
+    - stylecheck
+    - typecheck
+    - unconvert
+    - unparam
+    - unused
+    - varcheck
+    - whitespace
