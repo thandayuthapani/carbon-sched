@@ -65,6 +65,7 @@ func getEmissionRanking(lastRetrieved time.Time) (map[string]int64, error) {
 		if err != nil {
 			return map[string]int64{}, err
 		}
+		lastRetrieved = time.Now()
 		return EmissionRank, nil
 	}
 	return EmissionRank, nil
