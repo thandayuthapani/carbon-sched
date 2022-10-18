@@ -3,8 +3,7 @@ kind: Deployment
 metadata:
   labels:
     component: scheduler
-    tier: control-plane
-  name: my-scheduler
+  name: kube-carbon-scheduler
   namespace: kube-system
 spec:
   selector:
@@ -18,9 +17,9 @@ spec:
     spec:
       serviceAccountName: kube-carbon-scheduler
       containers:
-        - command:
+        - args:
             - --config=/etc/carbon-sched/carbon-scheduler-config
-            - --v=4
+            - --v=10
           image: thandayuthapani/kube-carbon-scheduler
           name: kube-carbon-scheduler
           volumeMounts:
