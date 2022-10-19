@@ -73,3 +73,12 @@
 - Discussion on hackathon
 
 ### Notes
+- Finish up on scheduler code
+
+## October 20, 2022
+### Agenda
+- Update on scheduler code
+- Update on metrics-server
+
+### Notes
+
