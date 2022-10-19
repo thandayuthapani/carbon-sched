@@ -11,6 +11,16 @@ data:
       - schedulerName: kube-carbon-scheduler
         plugins:
           score:
+            disabled:
+              - name: SelectorSpread
+              - name: ImageLocality
+              - name: TaintToleration
+              - name: NodeAffinity
+              - name: PodTopologySpread
+              - name: NodeResourcesFit
+              - name: NodeResourcesBalancedAllocation
+              - name: VolumeBinding
+              - name: InterPodAffinity
             enabled:
               - name: carbon
     leaderElection:
