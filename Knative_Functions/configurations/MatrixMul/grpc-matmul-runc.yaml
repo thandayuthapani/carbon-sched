@@ -10,7 +10,7 @@ spec:
         autoscaling.knative.dev/class: "kpa.autoscaling.knative.dev"
         autoscaling.knative.dev/scale-to-zero-pod-retention-period: "5m"
         autoscaling.knative.dev/metric: "concurrency"
-        autoscaling.knative.dev/target: "5"
+        autoscaling.knative.dev/target: "1"
     spec:
       containers:
         - image: docker.io/kkyfury/funcbench-matmul:v2
