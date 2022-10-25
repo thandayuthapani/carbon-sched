@@ -1,5 +1,5 @@
 # Collection of Metrics
-This file automates the k6 load test and obtains metrics from influxDB.
+This file automates the k6 load test and obtains request latency metrics from influxDB.
 
 ## Requirements
     requests
