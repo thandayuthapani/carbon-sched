@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"sync"
 	"time"
 
 	v1 "k8s.io/api/core/v1"
@@ -13,17 +14,18 @@ import (
 	"k8s.io/kubernetes/pkg/scheduler/framework"
 )
 
+var _ framework.ScorePlugin = &Plugin{}
+
 type Plugin struct {
 	handle framework.Handle
 }
 
-var _ framework.ScorePlugin = &Plugin{}
 var lastRetrieved time.Time
-
 var EmissionRank = map[string]int64{}
+var mutex = &sync.RWMutex{}
 
 // Name is the name of the plugin used in the plugin registry and configurations.
-const Name = "carbon"
+const Name = "CarbonScore"
 
 // Name returns name of the plugin. It is used in logs, etc.
 func (pl *Plugin) Name() string {
@@ -50,11 +52,12 @@ func calculateScores(nodeInfo *framework.NodeInfo) int64 {
 	}
 	emissionRank, err := getEmissionRanking(lastRetrieved)
 	if err != nil {
-		klog.Info(err)
+		klog.Error(err)
 		return 0
 	}
 	//region := nodeInfo.Node().Labels["node.kubernetes.io/region"]
 	region := nodeInfo.Node().Annotations["node.kubernetes.io/region"]
+	klog.Errorf("Region of the node is: ", region)
 	score := emissionRank[region]
 	return int64(10 * score)
 }
@@ -88,7 +91,9 @@ func queryDataFromServer() error {
 		return err
 	}
 	decoder := json.NewDecoder(res.Body)
+	mutex.Lock()
 	err = decoder.Decode(&EmissionRank)
+	mutex.Unlock()
 	if err != nil {
 		klog.Info(err)
 		return err
