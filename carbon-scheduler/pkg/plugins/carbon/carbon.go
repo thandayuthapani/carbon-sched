@@ -59,7 +59,7 @@ func calculateScores(nodeInfo *framework.NodeInfo) int64 {
 	region := nodeInfo.Node().Annotations["node.kubernetes.io/region"]
 	klog.Errorf("Region of the node is: ", region)
 	score := emissionRank[region]
-	return int64(10 * score)
+	return int64(score)
 }
 
 func getEmissionRanking(lastRetrieved time.Time) (map[string]int64, error) {
