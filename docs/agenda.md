@@ -81,4 +81,14 @@
 - Update on metrics-server
 
 ### Notes
+- Finish scheduler code
+- Make changes to metrics-collector to collect data from carbon-sdk
+- Load tester for functions
+- Upload functions to the repo
 
+## October 27, 2022
+### Agenda
+- Update on scheduler code
+- Update on metrics-collector
+
+### Notes
