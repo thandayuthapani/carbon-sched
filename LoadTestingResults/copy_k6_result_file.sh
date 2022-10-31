@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CONTAINER_ID=$(docker ps | grep "kkyfury/k6azure:v1" | awk '{ print $1}')
+CONTAINER_ID=$(docker ps | grep "kkyfury/k6basic:v1" | awk '{ print $1}')
 echo "$CONTAINER_ID"
 filename=$1
 
