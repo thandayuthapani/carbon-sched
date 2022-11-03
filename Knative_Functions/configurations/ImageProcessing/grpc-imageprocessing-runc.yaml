@@ -2,7 +2,7 @@ apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
   name: funcbench-imageprocessing-runc
-  namespace: default
+  namespace: liqo-demo
 spec:
   template:
     metadata:
@@ -12,6 +12,7 @@ spec:
         autoscaling.knative.dev/metric: "concurrency"
         autoscaling.knative.dev/target: "1"
     spec:
+      schedulerName: kube-carbon-scheduler
       containers:
         - image: docker.io/kkyfury/funcbench-imageprocessing:v2
           ports:
