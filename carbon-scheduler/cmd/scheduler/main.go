@@ -1,6 +1,7 @@
 package main
 
 import (
+	"carbon-scheduler/pkg/plugins/geoscore"
 	"math/rand"
 	"os"
 	"time"
@@ -19,7 +20,8 @@ func main() {
 	// and proxy waits on candidates in filter plugin
 
 	command := scheduler.NewSchedulerCommand(
-		scheduler.WithPlugin(carbon.Name, carbon.New))
+		scheduler.WithPlugin(carbon.Name, carbon.New),
+		scheduler.WithPlugin(geoscore.Name, geoscore.New))
 
 	// TODO: once we switch everything over to Cobra commands, we can go back to calling
 	// utilflag.InitFlags() (by removing its pflag.Parse() call). For now, we have to set the
