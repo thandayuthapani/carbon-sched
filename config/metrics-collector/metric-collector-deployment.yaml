@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metrics-collector
+spec:
+  selector:
+    matchLabels:
+      run: metrics-collector
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: metrics-collector
+    spec:
+      containers:
+        - name: metrics-collector
+          image: thandayuthapani/metrics-collector:25012023
+          imagePullPolicy: Always
+          command: ["./metrics-collector"]
+          args: ["-username={$USERNAME}}", "-password={$PASSWORD}"]
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: metrics-collector
+  labels:
+    run: metrics-collector
+spec:
+  type: NodePort      
+  ports:
+    - name: http
+      port: 8080
+      nodePort: 30005
+      protocol: TCP
+  selector:
+    run: metrics-collector
